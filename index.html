@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Speed Test</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Network Speed Test</h1>
+
+      <button id="start-btn" type="button">Start Test</button>
+      <button id="retry-btn" type="button" hidden>Retry</button>
+
+      <p id="error" role="alert" hidden></p>
+
+      <p id="phase">Idle</p>
+      <p id="live-reading"></p>
+
+      <section id="results" hidden>
+        <dl>
+          <dt>Download</dt>
+          <dd><span data-field="download"></span> Mbps</dd>
+
+          <dt>Upload</dt>
+          <dd><span data-field="upload"></span> Mbps</dd>
+
+          <dt>Ping</dt>
+          <dd><span data-field="ping"></span> ms</dd>
+
+          <dt>Your IP</dt>
+          <dd><span data-field="ip"></span></dd>
+
+          <dt>Server</dt>
+          <dd><span data-field="server"></span></dd>
+        </dl>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

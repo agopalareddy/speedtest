@@ -20,9 +20,9 @@
 
 **Purpose**: Project initialization matching sibling-project conventions (flat repo, Express, no build step)
 
-- [ ] T001 Create flat project skeleton (empty `index.html`, `style.css`, `app.js`, `server.js`) at repo root per plan.md Project Structure
-- [ ] T002 Initialize `package.json` (Express ^4.19.2 dependency, `"start": "node server.js"`, Node 20 engines field) and run `npm install`
-- [ ] T003 [P] Add `.gitignore`, `.prettierrc`, `.prettierignore` matching `LostCities/` conventions
+- [X] T001 Create flat project skeleton (empty `index.html`, `style.css`, `app.js`, `server.js`) at repo root per plan.md Project Structure
+- [X] T002 Initialize `package.json` (Express ^4.19.2 dependency, `"start": "node server.js"`, Node 20 engines field) and run `npm install`
+- [X] T003 [P] Add `.gitignore`, `.prettierrc`, `.prettierignore` matching `LostCities/` conventions
 
 ---
 
@@ -32,11 +32,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 In `server.js`, create the Express app: `app.set('trust proxy', true)`, `app.use(express.static(__dirname))`, listen on `process.env.PORT || 8082`
-- [ ] T005 [P] In `index.html`, create the single-page skeleton: start button, phase indicator placeholder, live numbers placeholder, results panel placeholder, link `style.css` and `app.js`
-- [ ] T006 [P] In `style.css`, set up base responsive layout (mobile-first, 320px+ widths, no horizontal scroll) for the elements defined in `index.html`
-- [ ] T007 [P] In `app.js`, scaffold the test-orchestration module: state object for current results, DOM references, and a `startTest()` entry point wired to the start button
-- [ ] T008 Implement `GET /api/ping` in `server.js` returning `204 No Content` with `Cache-Control: no-store`, per `contracts/api.md`
+- [X] T004 In `server.js`, create the Express app: `app.set('trust proxy', true)`, `app.use(express.static(__dirname))`, listen on `process.env.PORT || 8082`
+- [X] T005 [P] In `index.html`, create the single-page skeleton: start button, phase indicator placeholder, live numbers placeholder, results panel placeholder, link `style.css` and `app.js`
+- [X] T006 [P] In `style.css`, set up base responsive layout (mobile-first, 320px+ widths, no horizontal scroll) for the elements defined in `index.html`
+- [X] T007 [P] In `app.js`, scaffold the test-orchestration module: state object for current results, DOM references, and a `startTest()` entry point wired to the start button
+- [X] T008 Implement `GET /api/ping` in `server.js` returning `204 No Content` with `Cache-Control: no-store`, per `contracts/api.md`
 
 **Checkpoint**: Server starts, serves the static page, and responds to `/api/ping` — foundation ready for user story work
 
@@ -50,16 +50,16 @@
 
 ### Implementation for User Story 1
 
-- [ ] T009 [P] [US1] Implement `GET /api/download?bytes=N` in `server.js`: clamp `bytes` (min 64KB, max 25MB), stream a generated buffer with `Content-Length` set and `Cache-Control: no-store`, no `Content-Encoding`, per `contracts/api.md`
-- [ ] T010 [P] [US1] Implement `POST /api/upload` in `server.js`: consume the `application/octet-stream` body, count bytes received, respond `200` with `{ "bytesReceived": <number> }` and `Cache-Control: no-store`, per `contracts/api.md`
-- [ ] T011 [US1] In `app.js`, implement ping measurement: 5 sequential `fetch('/api/ping')` calls, discard the first, report the median round-trip in ms
-- [ ] T012 [US1] In `app.js`, implement download measurement: `fetch('/api/download?bytes=...')`, read via `response.body.getReader()`, compute Mbps from bytes read over elapsed time
-- [ ] T013 [US1] In `app.js`, implement upload measurement: generate a Blob/ArrayBuffer of fixed size, send via `XMLHttpRequest` `POST /api/upload`, compute Mbps from bytes sent over elapsed time
-- [ ] T014 [US1] In `app.js`, implement `startTest()` orchestration: run ping → download → upload in sequence, store final values in the results state object
-- [ ] T015 [US1] In `index.html`/`app.js`, render the results panel (download Mbps, upload Mbps, ping ms) once `startTest()` completes
-- [ ] T016 [US1] In `app.js`, ensure starting a new test resets/clears the previous results panel before showing new values (re-run replaces prior results)
-- [ ] T017 [US1] In `style.css`, finalize responsive styling for the results panel and controls across 320px–desktop widths, verifying no horizontal scroll
-- [ ] T018 [US1] In `app.js`/`index.html`, add an error/retry state: on any fetch/XHR failure during ping, download, or upload, show a clear error message with a retry action (FR-008)
+- [X] T009 [P] [US1] Implement `GET /api/download?bytes=N` in `server.js`: clamp `bytes` (min 64KB, max 25MB), stream a generated buffer with `Content-Length` set and `Cache-Control: no-store`, no `Content-Encoding`, per `contracts/api.md`
+- [X] T010 [P] [US1] Implement `POST /api/upload` in `server.js`: consume the `application/octet-stream` body, count bytes received, respond `200` with `{ "bytesReceived": <number> }` and `Cache-Control: no-store`, per `contracts/api.md`
+- [X] T011 [US1] In `app.js`, implement ping measurement: 5 sequential `fetch('/api/ping')` calls, discard the first, report the median round-trip in ms
+- [X] T012 [US1] In `app.js`, implement download measurement: `fetch('/api/download?bytes=...')`, read via `response.body.getReader()`, compute Mbps from bytes read over elapsed time
+- [X] T013 [US1] In `app.js`, implement upload measurement: generate a Blob/ArrayBuffer of fixed size, send via `XMLHttpRequest` `POST /api/upload`, compute Mbps from bytes sent over elapsed time
+- [X] T014 [US1] In `app.js`, implement `startTest()` orchestration: run ping → download → upload in sequence, store final values in the results state object
+- [X] T015 [US1] In `index.html`/`app.js`, render the results panel (download Mbps, upload Mbps, ping ms) once `startTest()` completes
+- [X] T016 [US1] In `app.js`, ensure starting a new test resets/clears the previous results panel before showing new values (re-run replaces prior results)
+- [X] T017 [US1] In `style.css`, finalize responsive styling for the results panel and controls across 320px–desktop widths, verifying no horizontal scroll
+- [X] T018 [US1] In `app.js`/`index.html`, add an error/retry state: on any fetch/XHR failure during ping, download, or upload, show a clear error message with a retry action (FR-008)
 
 **Checkpoint**: User Story 1 is fully functional and independently testable — full speed test runs end to end with results display and error handling
 
@@ -73,10 +73,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] In `app.js`, extend the download measurement (T012) to emit incremental throughput readings at least once per second while reading the response stream
-- [ ] T020 [US2] In `app.js`, extend the upload measurement (T013) to emit incremental throughput readings at least once per second via `xhr.upload.onprogress`
-- [ ] T021 [US2] In `index.html`/`app.js`, add a phase indicator (ping / download / upload / done) that updates as `startTest()` (T014) progresses through phases
-- [ ] T022 [US2] In `index.html`/`app.js`/`style.css`, bind the live throughput readings (T019, T020) to a live-updating number/gauge element, styled for smooth updates
+- [X] T019 [US2] In `app.js`, extend the download measurement (T012) to emit incremental throughput readings at least once per second while reading the response stream
+- [X] T020 [US2] In `app.js`, extend the upload measurement (T013) to emit incremental throughput readings at least once per second via `xhr.upload.onprogress`
+- [X] T021 [US2] In `index.html`/`app.js`, add a phase indicator (ping / download / upload / done) that updates as `startTest()` (T014) progresses through phases
+- [X] T022 [US2] In `index.html`/`app.js`/`style.css`, bind the live throughput readings (T019, T020) to a live-updating number/gauge element, styled for smooth updates
 
 **Checkpoint**: User Stories 1 AND 2 both work independently — live progress is visible during download and upload phases
 
@@ -90,8 +90,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T023 [P] [US3] Implement `GET /api/ip` in `server.js`: return `200` JSON `{ "ip": req.ip, "server": "<static label/env var>" }` with `Cache-Control: no-store`, per `contracts/api.md`
-- [ ] T024 [US3] In `app.js`/`index.html`, fetch `/api/ip` when a test completes and display `ip` and `server` alongside the results panel (T015)
+- [X] T023 [P] [US3] Implement `GET /api/ip` in `server.js`: return `200` JSON `{ "ip": req.ip, "server": "<static label/env var>" }` with `Cache-Control: no-store`, per `contracts/api.md`
+- [X] T024 [US3] In `app.js`/`index.html`, fetch `/api/ip` when a test completes and display `ip` and `server` alongside the results panel (T015)
 
 **Checkpoint**: All user stories are independently functional
 
@@ -101,11 +101,11 @@
 
 **Purpose**: Project-level documentation, licensing, and final validation
 
-- [ ] T025 [P] Add `node --test` contract tests for `/api/ping`, `/api/download`, `/api/upload`, `/api/ip` in `test/api.test.js`, per `contracts/api.md`
-- [ ] T026 Write `README.md` with project description, setup (`npm install`, `npm start`), and usage instructions
-- [ ] T027 [P] Add `LICENSE` (MIT), matching sibling-project licensing
-- [ ] T028 [P] Write `CONTRIBUTING.md` with local setup and contribution guidelines
-- [ ] T029 Run through `quickstart.md` end-to-end (all three user stories, edge cases: network failure mid-test, reload mid-test, 320px layout)
+- [X] T025 [P] Add `node --test` contract tests for `/api/ping`, `/api/download`, `/api/upload`, `/api/ip` in `test/api.test.js`, per `contracts/api.md`
+- [X] T026 Write `README.md` with project description, setup (`npm install`, `npm start`), and usage instructions
+- [X] T027 [P] Add `LICENSE` (MIT), matching sibling-project licensing
+- [X] T028 [P] Write `CONTRIBUTING.md` with local setup and contribution guidelines
+- [X] T029 Run through `quickstart.md` end-to-end (all three user stories, edge cases: network failure mid-test, reload mid-test, 320px layout)
 
 ---
 
