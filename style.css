@@ -5,6 +5,7 @@
   --text-secondary: #475569;
   --accent: #1e3a8a;
   --accent-hover: #1e40af;
+  --accent2: #16a34a;
   --accent-soft: #eff6ff;
   --border-color: #e2e8f0;
   --radius-md: 8px;
@@ -98,12 +99,38 @@ button:disabled {
 #chart {
   width: 100%;
   max-width: 320px;
-  height: 80px;
+  height: 110px;
   display: block;
   margin: 0 auto;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   background: var(--bg-surface);
+}
+
+#chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 0.25rem;
+  vertical-align: middle;
+}
+
+.swatch.download {
+  background: var(--accent);
+}
+
+.swatch.upload {
+  background: var(--accent2);
 }
 
 .card {

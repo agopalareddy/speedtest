@@ -82,28 +82,61 @@
     gaugeNeedle.setAttribute('transform', `rotate(${angle} 100 100)`);
   }
 
-  let chartSamples = [];
+  const CHART_PADDING = { left: 32, right: 8, top: 8, bottom: 8 };
+  let downloadSamples = [];
+  let uploadSamples = [];
 
-  function pushChartSample(value) {
-    chartSamples.push(value);
+  function pushChartSample(value, phase) {
+    (phase === 'download' ? downloadSamples : uploadSamples).push(value);
     drawChart();
+  }
+
+  function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
 
   function drawChart() {
     const { width: w, height: h } = chartCanvas;
     chartCtx.clearRect(0, 0, w, h);
-    if (chartSamples.length < 2) return;
-    const max = Math.max(...chartSamples, 1);
-    chartCtx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-    chartCtx.lineWidth = 2;
-    chartCtx.beginPath();
-    chartSamples.forEach((value, i) => {
-      const x = (i / (chartSamples.length - 1)) * w;
-      const y = h - (value / max) * h;
-      if (i === 0) chartCtx.moveTo(x, y);
-      else chartCtx.lineTo(x, y);
+
+    const all = [...downloadSamples, ...uploadSamples];
+    if (all.length < 2) return;
+
+    const plotW = w - CHART_PADDING.left - CHART_PADDING.right;
+    const plotH = h - CHART_PADDING.top - CHART_PADDING.bottom;
+    const max = Math.max(...all, 1);
+
+    chartCtx.font = '10px system-ui, sans-serif';
+    chartCtx.fillStyle = cssVar('--text-secondary');
+    chartCtx.strokeStyle = cssVar('--border-color');
+    chartCtx.lineWidth = 1;
+
+    // y-axis gridlines + Mbps labels at 0%, 50%, 100% of the current max
+    [0, 0.5, 1].forEach((fraction) => {
+      const y = CHART_PADDING.top + plotH * (1 - fraction);
+      chartCtx.beginPath();
+      chartCtx.moveTo(CHART_PADDING.left, y);
+      chartCtx.lineTo(w - CHART_PADDING.right, y);
+      chartCtx.stroke();
+      chartCtx.fillText(Math.round(max * fraction), 2, y + 3);
     });
-    chartCtx.stroke();
+
+    const plotLine = (samples, color) => {
+      if (samples.length < 2) return;
+      chartCtx.strokeStyle = color;
+      chartCtx.lineWidth = 2;
+      chartCtx.beginPath();
+      samples.forEach((value, i) => {
+        const x = CHART_PADDING.left + (i / (samples.length - 1)) * plotW;
+        const y = CHART_PADDING.top + plotH * (1 - value / max);
+        if (i === 0) chartCtx.moveTo(x, y);
+        else chartCtx.lineTo(x, y);
+      });
+      chartCtx.stroke();
+    };
+
+    plotLine(downloadSamples, cssVar('--accent'));
+    plotLine(uploadSamples, cssVar('--accent2'));
   }
 
   function resetUI() {
@@ -114,7 +147,8 @@
     setLive('');
     setGauge(0);
     setPhase('Idle');
-    chartSamples = [];
+    downloadSamples = [];
+    uploadSamples = [];
     drawChart();
   }
 
@@ -210,7 +244,7 @@
             samples.push(current);
             setLive(`${current.toFixed(2)} Mbps`);
             setGauge(current);
-            pushChartSample(current);
+            pushChartSample(current, 'download');
             lastSampleTime = now;
             lastSampleBytes = totalReceived;
 
@@ -298,7 +332,7 @@
         samples.push(current);
         setLive(`${current.toFixed(2)} Mbps`);
         setGauge(current);
-        pushChartSample(current);
+        pushChartSample(current, 'upload');
 
         const usable = samples.length > 1 ? samples.slice(1) : samples;
         const elapsed = performance.now() - overallStart;
