@@ -9,6 +9,8 @@
   const historyEl = document.getElementById('history');
   const historyListEl = document.getElementById('history-list');
   const gaugeNeedle = document.getElementById('gauge-needle');
+  const gaugeLabelMid = document.getElementById('gauge-label-mid');
+  const gaugeLabelMax = document.getElementById('gauge-label-max');
   const chartCanvas = document.getElementById('chart');
   const chartCtx = chartCanvas.getContext('2d');
 
@@ -20,7 +22,7 @@
   const STABILITY_THRESHOLD = 0.1; // last samples within ±10% of their median = stable
   const PING_COUNT = 7;
   const PROGRESS_INTERVAL_MS = 1000;
-  const GAUGE_MAX_MBPS = 200;
+  const GAUGE_INITIAL_MAX_MBPS = 200;
   const HISTORY_KEY = 'speedtest.history';
 
   const QUALITY_TIERS = [
@@ -76,8 +78,21 @@
     liveEl.textContent = value;
   }
 
+  let gaugeMax = GAUGE_INITIAL_MAX_MBPS;
+
+  // Round up to the next multiple of 100 so the scale stays readable as speeds grow.
+  function niceGaugeMax(mbps) {
+    return Math.max(GAUGE_INITIAL_MAX_MBPS, Math.ceil(mbps / 100) * 100);
+  }
+
   function setGauge(currentMbps) {
-    const ratio = Math.min(Math.max(currentMbps / GAUGE_MAX_MBPS, 0), 1);
+    const newMax = niceGaugeMax(currentMbps);
+    if (newMax !== gaugeMax) {
+      gaugeMax = newMax;
+      gaugeLabelMid.textContent = gaugeMax / 2;
+      gaugeLabelMax.textContent = gaugeMax;
+    }
+    const ratio = Math.min(Math.max(currentMbps / gaugeMax, 0), 1);
     const angle = -90 + ratio * 180;
     gaugeNeedle.setAttribute('transform', `rotate(${angle} 100 100)`);
   }
@@ -145,6 +160,9 @@
     startBtn.hidden = false;
     resultsEl.hidden = true;
     setLive('');
+    gaugeMax = GAUGE_INITIAL_MAX_MBPS;
+    gaugeLabelMid.textContent = gaugeMax / 2;
+    gaugeLabelMax.textContent = gaugeMax;
     setGauge(0);
     setPhase('Idle');
     downloadSamples = [];
