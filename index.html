@@ -4,11 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Network Speed Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main>
       <h1>Network Speed Test</h1>
+
+      <label for="duration">Test length</label>
+      <select id="duration">
+        <option value="auto" selected>Auto</option>
+        <option value="10">10s</option>
+        <option value="20">20s</option>
+        <option value="30">30s</option>
+      </select>
 
       <button id="start-btn" type="button">Start Test</button>
       <button id="retry-btn" type="button" hidden>Retry</button>
@@ -16,9 +27,17 @@
       <p id="error" role="alert" hidden></p>
 
       <p id="phase">Idle</p>
+
+      <svg id="gauge" viewBox="0 0 200 110" aria-hidden="true">
+        <path d="M10 100 A90 90 0 0 1 190 100" fill="none" stroke="var(--border-color)" stroke-width="12" />
+        <g id="gauge-needle" transform="rotate(-90 100 100)">
+          <line x1="100" y1="100" x2="100" y2="20" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" />
+        </g>
+        <circle cx="100" cy="100" r="6" fill="var(--accent)" />
+      </svg>
       <p id="live-reading"></p>
 
-      <section id="results" hidden>
+      <section id="results" class="card" hidden>
         <dl>
           <dt>Download</dt>
           <dd><span data-field="download"></span> Mbps</dd>
@@ -29,12 +48,24 @@
           <dt>Ping</dt>
           <dd><span data-field="ping"></span> ms</dd>
 
+          <dt>Jitter</dt>
+          <dd><span data-field="jitter"></span> ms</dd>
+
+          <dt>Sampled over</dt>
+          <dd><span data-field="duration"></span>s</dd>
+
           <dt>Your IP</dt>
           <dd><span data-field="ip"></span></dd>
 
           <dt>Server</dt>
           <dd><span data-field="server"></span></dd>
         </dl>
+        <p id="quality"></p>
+      </section>
+
+      <section id="history" hidden>
+        <h2>Previous results</h2>
+        <ul id="history-list"></ul>
       </section>
     </main>
     <script src="app.js"></script>
