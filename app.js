@@ -9,6 +9,8 @@
   const historyEl = document.getElementById('history');
   const historyListEl = document.getElementById('history-list');
   const gaugeNeedle = document.getElementById('gauge-needle');
+  const chartCanvas = document.getElementById('chart');
+  const chartCtx = chartCanvas.getContext('2d');
 
   const DOWNLOAD_CHUNK_BYTES = 20 * 1024 * 1024; // 20MB per chunk request
   const UPLOAD_CHUNK_BYTES = 5 * 1024 * 1024; // 5MB per chunk request
@@ -80,6 +82,30 @@
     gaugeNeedle.setAttribute('transform', `rotate(${angle} 100 100)`);
   }
 
+  let chartSamples = [];
+
+  function pushChartSample(value) {
+    chartSamples.push(value);
+    drawChart();
+  }
+
+  function drawChart() {
+    const { width: w, height: h } = chartCanvas;
+    chartCtx.clearRect(0, 0, w, h);
+    if (chartSamples.length < 2) return;
+    const max = Math.max(...chartSamples, 1);
+    chartCtx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    chartCtx.lineWidth = 2;
+    chartCtx.beginPath();
+    chartSamples.forEach((value, i) => {
+      const x = (i / (chartSamples.length - 1)) * w;
+      const y = h - (value / max) * h;
+      if (i === 0) chartCtx.moveTo(x, y);
+      else chartCtx.lineTo(x, y);
+    });
+    chartCtx.stroke();
+  }
+
   function resetUI() {
     errorEl.hidden = true;
     retryBtn.hidden = true;
@@ -88,6 +114,8 @@
     setLive('');
     setGauge(0);
     setPhase('Idle');
+    chartSamples = [];
+    drawChart();
   }
 
   function showError(message) {
@@ -182,6 +210,7 @@
             samples.push(current);
             setLive(`${current.toFixed(2)} Mbps`);
             setGauge(current);
+            pushChartSample(current);
             lastSampleTime = now;
             lastSampleBytes = totalReceived;
 
@@ -269,6 +298,7 @@
         samples.push(current);
         setLive(`${current.toFixed(2)} Mbps`);
         setGauge(current);
+        pushChartSample(current);
 
         const usable = samples.length > 1 ? samples.slice(1) : samples;
         const elapsed = performance.now() - overallStart;

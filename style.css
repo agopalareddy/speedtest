@@ -86,7 +86,6 @@ button:disabled {
 }
 
 #gauge-needle {
-  transform-origin: 100px 100px;
   transition: transform 0.3s ease-out;
 }
 
@@ -94,6 +93,17 @@ button:disabled {
   font-size: 2rem;
   font-weight: 700;
   min-height: 2.5rem;
+}
+
+#chart {
+  width: 100%;
+  max-width: 320px;
+  height: 80px;
+  display: block;
+  margin: 0 auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
 }
 
 .card {
