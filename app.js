@@ -63,7 +63,7 @@
     const times = [];
     for (let i = 0; i < PING_COUNT; i++) {
       const start = performance.now();
-      const res = await fetch('/api/ping', { cache: 'no-store' });
+      const res = await fetch('api/ping', { cache: 'no-store' });
       if (!res.ok) throw new Error('Ping failed');
       times.push(performance.now() - start);
     }
@@ -75,7 +75,7 @@
   async function measureDownload() {
     setPhase('Download');
     const start = performance.now();
-    const res = await fetch(`/api/download?bytes=${DOWNLOAD_BYTES}`, { cache: 'no-store' });
+    const res = await fetch(`api/download?bytes=${DOWNLOAD_BYTES}`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Download failed');
 
     const reader = res.body.getReader();
@@ -105,7 +105,7 @@
       let lastUpdate = start;
 
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/upload');
+      xhr.open('POST', 'api/upload');
       xhr.setRequestHeader('Content-Type', 'application/octet-stream');
 
       xhr.upload.onprogress = (e) => {
@@ -131,7 +131,7 @@
   }
 
   async function fetchConnectionInfo() {
-    const res = await fetch('/api/ip', { cache: 'no-store' });
+    const res = await fetch('api/ip', { cache: 'no-store' });
     if (!res.ok) throw new Error('IP lookup failed');
     const data = await res.json();
     state.ip = data.ip;
