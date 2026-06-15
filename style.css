@@ -24,7 +24,8 @@ body {
   background: var(--bg-base);
   color: var(--text-primary);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   padding: 1rem;
 }
 
@@ -32,6 +33,41 @@ main {
   width: 100%;
   max-width: 480px;
   text-align: center;
+}
+
+.top-bar {
+  width: 100%;
+  max-width: 480px;
+  padding-bottom: 0.5rem;
+}
+
+.back-home-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.back-home-link:hover {
+  color: var(--accent);
+}
+
+.site-footer {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+.site-footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--accent);
 }
 
 h1 {
@@ -88,6 +124,18 @@ button:disabled {
 
 #gauge-needle {
   transition: transform 0.3s ease-out;
+}
+
+.gauge-label {
+  font-size: 11px;
+  fill: var(--text-secondary);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+#gauge-unit {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 #live-reading {

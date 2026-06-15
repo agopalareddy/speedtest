@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="top-bar">
+      <a href="https://agreddy.com" class="back-home-link">← Portfolio</a>
+    </div>
     <main>
       <h1>Network Speed Test</h1>
 
@@ -34,6 +37,10 @@
           <line x1="100" y1="100" x2="100" y2="20" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" />
         </g>
         <circle cx="100" cy="100" r="6" fill="var(--accent)" />
+        <text x="10" y="108" class="gauge-label" text-anchor="start">0</text>
+        <text x="100" y="14" class="gauge-label" text-anchor="middle">100</text>
+        <text x="190" y="108" class="gauge-label" text-anchor="end">200</text>
+        <text x="100" y="55" id="gauge-unit" class="gauge-label" text-anchor="middle">Mbps</text>
       </svg>
       <p id="live-reading"></p>
       <canvas id="chart" width="320" height="110"></canvas>
@@ -73,6 +80,9 @@
         <ul id="history-list"></ul>
       </section>
     </main>
+    <footer class="site-footer">
+      <a href="https://github.com/agopalareddy/speedtest" target="_blank" rel="noopener">View source on GitHub</a>
+    </footer>
     <script src="app.js"></script>
   </body>
 </html>
