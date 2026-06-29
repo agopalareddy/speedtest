@@ -171,9 +171,15 @@ main {
 }
 
 /* Default to sun (light) icon, switch to moon in dark theme. */
-.theme-toggle-btn .icon-dark { display: none; }
-:root[data-resolved-theme='dark'] .theme-toggle-btn .icon-light { display: none; }
-:root[data-resolved-theme='dark'] .theme-toggle-btn .icon-dark { display: block; }
+.theme-toggle-btn .icon-dark {
+  display: none;
+}
+:root[data-resolved-theme='dark'] .theme-toggle-btn .icon-light {
+  display: none;
+}
+:root[data-resolved-theme='dark'] .theme-toggle-btn .icon-dark {
+  display: block;
+}
 
 .site-footer {
   width: 100%;
@@ -325,8 +331,12 @@ a:focus-visible {
   margin-right: var(--space-xs);
   vertical-align: middle;
 }
-.swatch.download { background: var(--accent); }
-.swatch.upload { background: var(--accent2); }
+.swatch.download {
+  background: var(--accent);
+}
+.swatch.upload {
+  background: var(--accent2);
+}
 
 .card {
   background: var(--bg-surface);
@@ -390,7 +400,9 @@ a:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     transition: none !important;
     animation: none !important;
   }

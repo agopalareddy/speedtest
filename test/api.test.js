@@ -141,6 +141,9 @@ test('Source tree is not served over HTTP (no source leak)', async () => {
   // Static dir must not expose the source tree, .git, or any non-asset file.
   for (const path of ['server.js', 'package.json', 'test/api.test.js', '.git/HEAD', 'specs/']) {
     const res = await fetch(`${baseUrl}/${path}`);
-    assert.ok(res.status === 404 || res.status === 403, `${path} should be blocked, got ${res.status}`);
+    assert.ok(
+      res.status === 404 || res.status === 403,
+      `${path} should be blocked, got ${res.status}`
+    );
   }
 });

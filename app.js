@@ -52,7 +52,9 @@
 
   function getTestMode() {
     const value = document.getElementById('duration').value;
-    return value === 'auto' ? { auto: true, capMs: AUTO_MAX_MS } : { auto: false, capMs: Number(value) * 1000 };
+    return value === 'auto'
+      ? { auto: true, capMs: AUTO_MAX_MS }
+      : { auto: false, capMs: Number(value) * 1000 };
   }
 
   // True once the last STABILITY_WINDOW samples agree within STABILITY_THRESHOLD of their median.
@@ -89,12 +91,26 @@
 
   function classifyError(err) {
     if (err && err.name === 'AbortError') return { kind: 'cancelled', message: 'Test cancelled.' };
-    if (err && err.name === 'TimeoutError') return { kind: 'timeout', message: 'Test timed out. The server is slow or unreachable.' };
-    if (err && err instanceof TypeError) return { kind: 'offline', message: "Can't reach the test server. Check your connection and retry." };
+    if (err && err.name === 'TimeoutError')
+      return { kind: 'timeout', message: 'Test timed out. The server is slow or unreachable.' };
+    if (err && err instanceof TypeError)
+      return {
+        kind: 'offline',
+        message: "Can't reach the test server. Check your connection and retry.",
+      };
     if (err && err.status) {
-      if (err.status >= 500) return { kind: 'server', message: `Server error (${err.status}). Please try again in a moment.` };
-      if (err.status === 429) return { kind: 'rate-limit', message: 'Too many tests in a row. Wait a few seconds and retry.' };
-      if (err.status >= 400) return { kind: 'client', message: `Request rejected (${err.status}).` };
+      if (err.status >= 500)
+        return {
+          kind: 'server',
+          message: `Server error (${err.status}). Please try again in a moment.`,
+        };
+      if (err.status === 429)
+        return {
+          kind: 'rate-limit',
+          message: 'Too many tests in a row. Wait a few seconds and retry.',
+        };
+      if (err.status >= 400)
+        return { kind: 'client', message: `Request rejected (${err.status}).` };
     }
     return { kind: 'unknown', message: 'Something went wrong running the test. Please try again.' };
   }
@@ -303,7 +319,12 @@
       while (!stop && performance.now() - overallStart < mode.capMs) {
         const remaining = mode.capMs - (performance.now() - overallStart);
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(new DOMException('Timeout', 'TimeoutError')), remaining);
+        // Plain abort() yields an AbortError, which we treat below as the
+        // natural end of the test (cap or stability reached). If we passed
+        // a TimeoutError reason instead, the catch would re-throw and
+        // withRetry would reset overallStart — making explicit durations
+        // run twice as long.
+        const timer = setTimeout(() => controller.abort(), remaining);
 
         try {
           const res = await fetch(`api/download?bytes=${DOWNLOAD_CHUNK_BYTES}`, {
@@ -341,9 +362,10 @@
             }
           }
         } catch (err) {
-          if (err.name === 'AbortError' && stop) break;
-          if (err.name === 'TimeoutError') throw err;
-          if (err.name !== 'AbortError') throw err;
+          // AbortError = cap reached or stability detected = normal end.
+          // Any other error is a real failure that should retry/propagate.
+          if (err.name === 'AbortError') break;
+          throw err;
         } finally {
           clearTimeout(timer);
         }
@@ -351,7 +373,9 @@
 
       // drop the first sample (connection warm-up) when we have enough data
       const usable = samples.length > 1 ? samples.slice(1) : samples;
-      state.downloadMbps = usable.length ? median(usable) : mbps(totalReceived, performance.now() - overallStart);
+      state.downloadMbps = usable.length
+        ? median(usable)
+        : mbps(totalReceived, performance.now() - overallStart);
       state.downloadDurationS = (performance.now() - overallStart) / 1000;
     });
   }
@@ -461,13 +485,19 @@
       await measurePing();
       await measureDownload(mode);
       await measureUpload(mode);
-      state.testDurationS = Math.round((state.downloadDurationS || 0) + (state.uploadDurationS || 0));
+      state.testDurationS = Math.round(
+        (state.downloadDurationS || 0) + (state.uploadDurationS || 0)
+      );
       await fetchConnectionInfo();
       setPhase('Done');
       setLive('');
       setGauge(0);
       showResults();
-      saveToHistory({ ...state, timestamp: Date.now(), qualityLabel: qualityLabel(state.downloadMbps) });
+      saveToHistory({
+        ...state,
+        timestamp: Date.now(),
+        qualityLabel: qualityLabel(state.downloadMbps),
+      });
       renderHistory();
     } catch (err) {
       const c = classifyError(err);
@@ -480,11 +510,17 @@
   // Theme: light / dark / system. Mirrors personal-website's resolved-theme
   // pattern. Stored in localStorage; defaults to system preference.
   function applyTheme(theme) {
-    const resolved = theme === 'system' || !theme
-      ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-      : theme;
+    const resolved =
+      theme === 'system' || !theme
+        ? matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+        : theme;
     document.documentElement.dataset.resolvedTheme = resolved;
-    themeToggle.setAttribute('aria-label', `Theme: ${theme || 'system'} (${resolved}). Click to change.`);
+    themeToggle.setAttribute(
+      'aria-label',
+      `Theme: ${theme || 'system'} (${resolved}). Click to change.`
+    );
   }
 
   function cycleTheme() {

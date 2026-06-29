@@ -23,7 +23,7 @@ const SECURITY_HEADERS = {
   'X-Frame-Options': 'DENY',
   // CSP: lock the app down. Google Fonts is the only external origin we need.
   // style-src 'unsafe-inline' because the gauge SVG sets inline stroke colors.
-  "Content-Security-Policy":
+  'Content-Security-Policy':
     "default-src 'self'; " +
     "img-src 'self' data:; " +
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
@@ -45,7 +45,9 @@ app.use((_req, res, next) => {
 // (e.g. an external dashboard pulling the same endpoints). Empty default
 // means no Access-Control-Allow-Origin header is ever sent.
 if (process.env.CORS_ORIGIN) {
-  const allow = process.env.CORS_ORIGIN.split(',').map((s) => s.trim()).filter(Boolean);
+  const allow = process.env.CORS_ORIGIN.split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
   app.use(cors({ origin: allow, methods: ['GET', 'POST'] }));
 }
 
@@ -70,7 +72,15 @@ const staticLimiter = rateLimit({
 
 // Whitelist the assets the browser actually needs. Without this, express.static
 // happily serves server.js, test/, specs/, .git/, .claude/, .specify/, etc.
-const STATIC_ALLOWLIST = new Set(['', '/', '/index.html', '/style.css', '/app.js', '/theme-init.js', '/favicon.ico']);
+const STATIC_ALLOWLIST = new Set([
+  '',
+  '/',
+  '/index.html',
+  '/style.css',
+  '/app.js',
+  '/theme-init.js',
+  '/favicon.ico',
+]);
 app.use((req, res, next) => {
   // Only GET/HEAD on the allowlist, or anything under /api/* or /healthz.
   if (req.method === 'GET' || req.method === 'HEAD') {
@@ -94,7 +104,7 @@ app.use(
         res.setHeader('Cache-Control', 'public, max-age=3600');
       }
     },
-  }),
+  })
 );
 
 app.get('/api/ping', speedtestLimiter, (_req, res) => {
@@ -161,7 +171,7 @@ app.post(
     }
     res.set('Cache-Control', 'no-store');
     res.json({ bytesReceived: buf.length });
-  },
+  }
 );
 
 // Reject non-POST on /api/upload so the speed-test path stays one-method.
