@@ -8,12 +8,19 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "test:api": "node --test test/api.test.js",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test:api && npm run test:e2e",
+    "format": "prettier --write ."
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2"
   },
   "devDependencies": {
-    "prettier": "^3.8.3"
+    "@playwright/test": "^1.61.1",
+    "prettier": "^3.9.0"
   }
 }

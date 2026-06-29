@@ -3,17 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Network speed test — measures download, upload, and ping from your browser to this server." />
+    <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#12141a" media="(prefers-color-scheme: dark)" />
     <title>Network Speed Test</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <script src="theme-init.js"></script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
     <div class="top-bar">
       <a href="https://agreddy.com" class="back-home-link">← Portfolio</a>
+      <button
+        id="theme-toggle"
+        class="theme-toggle-btn"
+        type="button"
+        aria-label="Toggle theme"
+        title="Cycle light / dark / system"
+      >
+        <svg
+          class="icon-light"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+        <svg
+          class="icon-dark"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      </button>
     </div>
-    <main>
+    <main id="main">
       <h1>Network Speed Test</h1>
 
       <label for="duration">Test length</label>
@@ -42,7 +87,7 @@
         <text x="190" y="108" id="gauge-label-max" class="gauge-label" text-anchor="end">200</text>
         <text x="100" y="55" id="gauge-unit" class="gauge-label" text-anchor="middle">Mbps</text>
       </svg>
-      <p id="live-reading"></p>
+      <p id="live-reading" aria-live="polite"></p>
       <canvas id="chart" width="320" height="110"></canvas>
       <div id="chart-legend">
         <span><span class="swatch download"></span>Download</span>
@@ -60,7 +105,7 @@
           <dt>Ping</dt>
           <dd><span data-field="ping"></span> ms</dd>
 
-          <dt>Jitter</dt>
+          <dt>Jitter (std dev)</dt>
           <dd><span data-field="jitter"></span> ms</dd>
 
           <dt>Sampled over</dt>
