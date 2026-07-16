@@ -137,6 +137,40 @@ test('GET /healthz returns ok with uptime', async () => {
   assert.ok(typeof json.uptime === 'number' && json.uptime >= 0);
 });
 
+test('speedtestLimiter allows requests up to limit and rejects with 429 when exceeded', async () => {
+  const ip = '192.168.1.100';
+  const headers = { 'X-Forwarded-For': ip };
+
+  const reqs = Array.from({ length: 600 }, () => fetch(`${baseUrl}/api/ping`, { headers }));
+  const responses = await Promise.all(reqs);
+
+  for (let i = 0; i < responses.length; i++) {
+    assert.strictEqual(responses[i].status, 204, `Request ${i} failed`);
+  }
+
+  const excessRes = await fetch(`${baseUrl}/api/ping`, { headers });
+  assert.strictEqual(excessRes.status, 429);
+  const json = await excessRes.json();
+  assert.strictEqual(json.error, 'Too many requests, slow down.');
+});
+
+test('staticLimiter allows requests up to limit and rejects with 429 when exceeded', async () => {
+  const ip = '192.168.1.101';
+  const headers = { 'X-Forwarded-For': ip };
+
+  const reqs = Array.from({ length: 300 }, () => fetch(`${baseUrl}/healthz`, { headers }));
+  const responses = await Promise.all(reqs);
+
+  for (let i = 0; i < responses.length; i++) {
+    assert.strictEqual(responses[i].status, 200, `Request ${i} failed`);
+  }
+
+  const excessRes = await fetch(`${baseUrl}/healthz`, { headers });
+  assert.strictEqual(excessRes.status, 429);
+  const text = await excessRes.text();
+  assert.strictEqual(text, 'Too many requests, please try again later.');
+});
+
 test('Source tree is not served over HTTP (no source leak)', async () => {
   // Static dir must not expose the source tree, .git, or any non-asset file.
   for (const path of ['server.js', 'package.json', 'test/api.test.js', '.git/HEAD', 'specs/']) {
