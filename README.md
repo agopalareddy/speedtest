@@ -28,7 +28,7 @@ the page and API from the same origin.
 
 - `PORT` — port to listen on (default `8082`)
 - `SERVER_LABEL` — label shown to visitors identifying this server/location
-  (default `gcp-showcase (us-central1)`)
+  (default `contabo-showcase (us-central)`)
 
 ## Testing
 
